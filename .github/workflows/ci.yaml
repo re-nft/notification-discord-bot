@@ -1,0 +1,30 @@
+name: CI
+
+on: pull_request
+
+jobs:
+  ci:
+    strategy:
+      matrix:
+        python-version: ["3.10"]
+    runs-on: "ubuntu-latest"
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install poetry
+        run: pipx install poetry
+      - uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: 'poetry'
+      - name: Install dependencies
+        run: poetry install
+      - name: Check formatting with isort and black
+        run: |
+          poetry run isort . --check-only
+          poetry run black . --check
+      - name: Check typing with mypy
+        run: poetry run mypy .
+      - name: Check linting with pylint
+        run: poetry run pylint --recursive=y .
+      - name: Run unit tests
+        run: poetry run pytest
