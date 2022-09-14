@@ -30,4 +30,6 @@ jobs:
       - name: Check linting with pylint
         run: poetry run pylint --recursive=y .
       - name: Run unit tests
-        run: poetry run pytest
+        run: |
+          cp .env.test .env
+          poetry run pytest
