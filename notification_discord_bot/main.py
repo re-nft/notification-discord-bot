@@ -5,9 +5,10 @@ import time
 import discord
 import tweepy
 
-from notification_discord_bot import constants, db, utils
+from notification_discord_bot import constants, utils
 from notification_discord_bot.contracts import all_contracts
 from notification_discord_bot.logger import logger
+from notification_discord_bot.seed import seed
 
 
 class MessageSender:
@@ -60,7 +61,7 @@ def check_for_updates(msg_sender: MessageSender):
 def main():
     logger.info(f"Discord is enabled: {utils.discord_enabled()}")
     logger.info(f"Twitter is enabled: {utils.twitter_enabled()}")
-    db.seed()
+    seed()
     msg_sender = MessageSender()
     while True:
         check_for_updates(msg_sender)

@@ -3,7 +3,6 @@ import json
 import requests
 
 from notification_discord_bot import constants
-from notification_discord_bot.contracts import ReNFTContract
 from notification_discord_bot.logger import logger
 
 
@@ -21,39 +20,6 @@ def twitter_enabled() -> bool:
 
 def discord_enabled() -> bool:
     return constants.DISCORD_WEBHOOK is not None
-
-
-def resolve_payment_token_details(
-    contract: ReNFTContract, token: constants.PaymentToken
-) -> constants.PaymentTokenDetails:
-    return constants.RESOLVERS[contract.name][token]
-
-
-def get_rent_duration_unit(contract: ReNFTContract) -> str:
-    from notification_discord_bot.contracts import AvalancheWhoopiContract
-
-    return "cycles" if isinstance(contract, AvalancheWhoopiContract) else "days"
-
-
-def get_profile_url(contract: ReNFTContract, address: str):
-    from notification_discord_bot.renft import Chain
-
-    chain = contract.chain()
-    chain_mapping = {
-        Chain.ETH: f"https://etherscan.io/address/{address}",
-        Chain.MATIC: f"https://polygonscan.com/address/{address}",
-        Chain.AVAX: f"https://snowtrace.io/address/{address}",
-    }
-    return chain_mapping[chain]
-
-
-def get_lending_url(contract: ReNFTContract, lending_id: str):
-    from notification_discord_bot.contracts import AvalancheWhoopiContract
-
-    if isinstance(contract, AvalancheWhoopiContract):
-        return f"{constants.RENFT_BASE_URL}/collections/castle-crush?lendingId={lending_id}"
-    contract_type = "collateral_free" if contract.is_collateral_free() else "collateral"
-    return f"{constants.RENFT_BASE_URL}?ctx={contract_type}&lendingId={lending_id}"
 
 
 def construct_the_graph_query(query: str, first: int, skip: int) -> str:

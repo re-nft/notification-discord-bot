@@ -10,6 +10,7 @@ from notification_discord_bot.constants import (
     MATIC_SYLVESTER_CONTRACT_NAME,
 )
 from notification_discord_bot.currency import format_fixed, unpack_price
+from notification_discord_bot.data import ReNFTLendingDatum, ReNFTRentingDatum
 from notification_discord_bot.nft import get_nft
 from notification_discord_bot.queries import (
     AZRAEL_GET_LENDINGS_QUERY,
@@ -25,15 +26,17 @@ from notification_discord_bot.renft import (
     PaymentToken,
     ReNFTContract,
     ReNFTDatum,
-    ReNFTLendingDatum,
-    ReNFTRentingDatum,
     Renting,
     TransactionType,
 )
-from notification_discord_bot.utils import (
-    query_the_graph,
-    resolve_payment_token_details,
-)
+from notification_discord_bot.resolvers import RESOLVERS, PaymentTokenDetails
+from notification_discord_bot.utils import query_the_graph
+
+
+def resolve_payment_token_details(
+    contract: ReNFTContract, token: PaymentToken
+) -> PaymentTokenDetails:
+    return RESOLVERS[contract.name][token]
 
 
 class AzraelContract(ReNFTContract, mixins.BlockchainContractMixin):

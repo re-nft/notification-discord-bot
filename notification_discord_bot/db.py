@@ -40,12 +40,12 @@ class Model(ABC):
             )
 
     @classmethod
-    def filter(cls, **kwargs): # -> list[Self] awaiting 3.11 for typing
+    def filter(cls, **kwargs):  # -> list[Self] awaiting 3.11 for typing
         coll = get_collection(cls.collection_name)  # type: ignore
         return [cls(**doc) for doc in coll if document_matches_builder(**kwargs)(doc)]
 
     @classmethod
-    def get_or_none(cls, **kwargs): # -> Optional[Self] awaiting 3.11 for typing
+    def get_or_none(cls, **kwargs):  # -> Optional[Self] awaiting 3.11 for typing
         cls.assert_kwargs_are_unique(**kwargs)
         l = cls.filter(**kwargs)
         if len(l) == 0:
@@ -83,17 +83,9 @@ def is_initialized() -> bool:
 
 def initialize():
     with open(DB_PATH, "w") as f:
-        # pylint: disable=unused-import
+        # pylint: disable=unused-import,import-outside-toplevel,cyclic-import
         from notification_discord_bot import models
 
         all_models = Model.__subclasses__()
         d = {model.collection_name: [] for model in all_models}
         json.dump(d, f, ensure_ascii=False, indent=4)
-
-
-def seed():
-    if not is_initialized():
-        initialize()
-    from notification_discord_bot.seed import seed_renft
-
-    seed_renft()

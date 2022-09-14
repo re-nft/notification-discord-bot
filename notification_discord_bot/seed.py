@@ -1,3 +1,4 @@
+from notification_discord_bot import db
 from notification_discord_bot.contracts import all_contracts
 from notification_discord_bot.logger import logger
 from notification_discord_bot.models import ReNFTModel
@@ -21,3 +22,10 @@ def seed_renft():
         rentings = contract.get_rentings()
         for renting in rentings:
             renting.observe()
+
+
+def seed():
+    if not db.is_initialized():
+        db.initialize()
+
+    seed_renft()
