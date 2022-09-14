@@ -17,7 +17,7 @@ def get_nft_with_nft_port(
     query_url = f"https://api.nftport.xyz/v0/nfts/{address}/{token_id}?chain=${_chain}"
     headers = {"content-type": "application/json", "Authorization": NFT_PORT_API_KEY}
 
-    res = requests.get(query_url, headers=headers)
+    res = requests.get(query_url, headers=headers, timeout=20)
     res.raise_for_status()
     data = json.loads(res.content)
     return NonFungibleToken(
@@ -35,7 +35,7 @@ def get_castle_crush_nft(address: str, token_id: str, chain: Chain) -> NonFungib
         raise AssertionError("Invalid chain for Castle Crush.")
     hex_token_id = hex(int(token_id))[2:].rjust(64, "0")
     query_url = f"https://castle-crush-crypto-bucket.s3.amazonaws.com/metadata/{hex_token_id}.json"
-    res = requests.get(query_url)
+    res = requests.get(query_url, timeout=20)
     res.raise_for_status()
     data = json.loads(res.content)
     return NonFungibleToken(

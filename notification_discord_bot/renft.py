@@ -122,7 +122,7 @@ class ReNFTDatum(ABC):
         pass
 
     @abstractmethod
-    def observe(self) -> bool:
+    def observe(self):
         pass
 
 

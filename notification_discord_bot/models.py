@@ -9,5 +9,11 @@ class ReNFTModel(Model):
     contract_name: str
     transaction_type: TransactionType
     renft_id: str
-    collection_name = "renft"
-    unique_index = {"contract_name", "transaction_type"}
+
+    @classmethod
+    def collection_name(cls):
+        return "renft"
+
+    @classmethod
+    def unique_index(cls):
+        return {"contract_name", "transaction_type"}

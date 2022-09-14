@@ -1,5 +1,7 @@
 from operator import attrgetter
 
+import discord
+
 from notification_discord_bot.models import ReNFTModel
 from notification_discord_bot.renft import (
     Lending,
@@ -24,7 +26,6 @@ class ReNFTLendingDatum(ReNFTDatum):
         self.lending = lending
 
     def build_discord_message(self):
-
         nft = self.lending.nft()
         rent_duration_unit = get_rent_duration_unit(self.contract)
 
@@ -94,11 +95,12 @@ class ReNFTLendingDatum(ReNFTDatum):
         return m is not None and self.lending.id <= attrgetter("renft_id")(m)
 
     def observe(self):
-        return ReNFTModel.update_or_create(
-            contract_name=self.contract.name,
-            transaction_type=TransactionType.LEND,
-            defaults={"renft_id": self.lending.id},
-        )
+        if not self.has_been_observed():
+            ReNFTModel.update_or_create(
+                contract_name=self.contract.name,
+                transaction_type=TransactionType.LEND,
+                defaults={"renft_id": self.lending.id},
+            )
 
 
 class ReNFTRentingDatum(ReNFTDatum):

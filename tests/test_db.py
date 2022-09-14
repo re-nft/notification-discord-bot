@@ -12,8 +12,14 @@ class DummyModel(db.Model):
     a: str
     b: str
     c: str
-    unique_index = {"a", "b"}
-    collection_name = "test-collection"
+
+    @classmethod
+    def collection_name(cls):
+        return "test-collection"
+
+    @classmethod
+    def unique_index(cls):
+        return {"a", "b"}
 
 
 def setup_function():
@@ -21,7 +27,7 @@ def setup_function():
         db.initialize()
     with open(DB_PATH, "r") as f:
         d = json.load(f)
-        d[DummyModel.collection_name] = []
+        d[DummyModel.collection_name()] = []
 
     with open(DB_PATH, "w") as f:
         json.dump(d, f, ensure_ascii=False, indent=4)
@@ -30,7 +36,7 @@ def setup_function():
 def teardown_function():
     with open(DB_PATH, "r") as f:
         d = json.load(f)
-        del d[DummyModel.collection_name]
+        del d[DummyModel.collection_name()]
 
     with open(DB_PATH, "w") as f:
         json.dump(d, f, ensure_ascii=False, indent=4)

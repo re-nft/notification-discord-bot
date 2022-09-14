@@ -32,7 +32,7 @@ def query_the_graph(
     query_url: str, query: str, first=constants.DEFAULT_PAGE_SIZE, skip=0
 ):
     the_graph_query = construct_the_graph_query(query, first, skip)
-    res = requests.post(query_url, json={"query": the_graph_query})
+    res = requests.post(query_url, json={"query": the_graph_query}, timeout=20)
     res.raise_for_status()
     data = json.loads(res.content)
     if errors := data.get("errors"):

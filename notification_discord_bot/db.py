@@ -6,10 +6,10 @@ from os.path import exists
 from notification_discord_bot.constants import DB_PATH
 
 
-def get_collection(collection_name: str):
+def get_collection(coll_name: str):
     with open(DB_PATH, "r") as f:
         d = json.load(f)
-        coll = d.get(collection_name)
+        coll = d.get(coll_name)
     return coll
 
 
@@ -22,26 +22,24 @@ def document_matches_builder(**kwargs):
 
 @dataclass
 class Model(ABC):
-    @property
     @classmethod
     def unique_index(cls) -> set[str]:
         raise NotImplementedError()
 
-    @property
     @classmethod
     def collection_name(cls) -> str:
         raise NotImplementedError()
 
     @classmethod
     def assert_kwargs_are_unique(cls, **kwargs):
-        if not cls.unique_index == set(kwargs.keys()):
+        if not cls.unique_index() == set(kwargs.keys()):
             raise AssertionError(
                 "Keyword arguments don't uniquely identify the document."
             )
 
     @classmethod
     def filter(cls, **kwargs):  # -> list[Self] awaiting 3.11 for typing
-        coll = get_collection(cls.collection_name)  # type: ignore
+        coll = get_collection(cls.collection_name())
         return [cls(**doc) for doc in coll if document_matches_builder(**kwargs)(doc)]
 
     @classmethod
@@ -57,7 +55,7 @@ class Model(ABC):
     @classmethod
     def update_or_create(cls, defaults=None, **kwargs):
         cls.assert_kwargs_are_unique(**kwargs)
-        coll = get_collection(cls.collection_name)
+        coll = get_collection(cls.collection_name())
         existing_doc = cls.get_or_none(**kwargs)
         if defaults is None:
             defaults = {}
@@ -71,7 +69,7 @@ class Model(ABC):
         coll.append(new_doc)
         with open(DB_PATH, "r") as f:
             d = json.load(f)
-            d[cls.collection_name] = coll
+            d[cls.collection_name()] = coll
 
         with open(DB_PATH, "w") as f:
             json.dump(d, f, ensure_ascii=False, indent=4)
@@ -87,5 +85,5 @@ def initialize():
         from notification_discord_bot import models
 
         all_models = Model.__subclasses__()
-        d = {model.collection_name: [] for model in all_models}
+        d = {model.collection_name(): [] for model in all_models}
         json.dump(d, f, ensure_ascii=False, indent=4)
