@@ -10,7 +10,9 @@ formatter = logging.Formatter(
     datefmt="%Y-%m-%d %H:%M:%S",
 )
 
-f_handler = logging.FileHandler(filename="notification_discord_bot.log", encoding="utf-8")
+f_handler = logging.FileHandler(
+    filename="notification_discord_bot.log", encoding="utf-8"
+)
 f_handler.setLevel(F_LOGLEVEL)
 f_handler.setFormatter(formatter)
 logger.addHandler(f_handler)

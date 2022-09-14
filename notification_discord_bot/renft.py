@@ -177,7 +177,10 @@ class ReNFTLendingDatum(ReNFTDatum):
         return msg
 
     def build_twitter_message(self):
-        from notification_discord_bot.utils import get_lending_url, get_rent_duration_unit
+        from notification_discord_bot.utils import (
+            get_lending_url,
+            get_rent_duration_unit,
+        )
 
         nft = self.lending.nft()
         rent_duration_unit = get_rent_duration_unit(self.contract)
@@ -275,7 +278,10 @@ class ReNFTRentingDatum(ReNFTDatum):
         return msg
 
     def build_twitter_message(self):
-        from notification_discord_bot.utils import get_lending_url, get_rent_duration_unit
+        from notification_discord_bot.utils import (
+            get_lending_url,
+            get_rent_duration_unit,
+        )
 
         nft = self.renting.nft()
         rent_duration_unit = get_rent_duration_unit(self.contract)
