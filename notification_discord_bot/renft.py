@@ -45,12 +45,12 @@ class Lending:
     lending_id: int
     lender_address: str
     max_rent_duration: int
-    daily_rent_price: Optional[int]
+    daily_rent_price: Optional[float]
     lent_amount: int
     payment_token: PaymentToken
-    collateral: Optional[int]
+    collateral: Optional[float]
     lent_at: int
-    upfront_rent_fee: Optional[int]
+    upfront_rent_fee: Optional[float]
 
     @property
     def id(self):
@@ -66,10 +66,10 @@ class Renting:
     rent_duration: int
     rented_at: int
     payment_token: PaymentToken
-    collateral: Optional[int]
-    daily_rent_price: Optional[int]
+    collateral: Optional[float]
+    daily_rent_price: Optional[float]
     lender_address: str
-    upfront_rent_fee: Optional[int]
+    upfront_rent_fee: Optional[float]
 
     @property
     def id(self):
@@ -189,14 +189,16 @@ class ReNFTLendingDatum(ReNFTDatum):
             msg = (
                 f"{nft.name} lent for "
                 f"{self.lending.daily_rent_price} {self.lending.payment_token.name} "
-                f"per day for a max of {self.lending.max_rent_duration} {rent_duration_unit}. "
+                f"per day for a max of {self.lending.max_rent_duration} {rent_duration_unit} "
+                f"by {self.lending.lender_address}. "
                 f"{get_lending_url(self.contract, self.lending.lending_id)}"
             )
         else:
             msg = (
                 f"{nft.name} lent for a fee of "
                 f"{self.lending.upfront_rent_fee} {self.lending.payment_token.name} "
-                f"for a max of {self.lending.max_rent_duration} {rent_duration_unit}. "
+                f"for a max of {self.lending.max_rent_duration} {rent_duration_unit} "
+                f"by {self.lending.lender_address}. "
                 f"{get_lending_url(self.contract, self.lending.lending_id)}"
             )
         return msg
@@ -271,8 +273,8 @@ class ReNFTRentingDatum(ReNFTDatum):
                 inline=True,
             )
         msg.add_field(
-            name="Lender",
-            value=f"{get_profile_url(self.contract, self.renting.lender_address)}",
+            name="Renter",
+            value=f"{get_profile_url(self.contract, self.renting.renter_address)}",
             inline=False,
         )
         return msg
@@ -289,14 +291,16 @@ class ReNFTRentingDatum(ReNFTDatum):
             msg = (
                 f"{nft.name} rented for "
                 f"{self.renting.daily_rent_price} {self.renting.payment_token.name} "
-                f"per day for {self.renting.rent_duration} {rent_duration_unit}. "
+                f"per day for {self.renting.rent_duration} {rent_duration_unit} "
+                f"by {self.renting.renter_address}. "
                 f"{get_lending_url(self.contract, self.renting.lending_id)}"
             )
         else:
             msg = (
                 f"{nft.name} rented for a fee of "
                 f"{self.renting.upfront_rent_fee} {self.renting.payment_token.name} "
-                f"for {self.renting.rent_duration} {rent_duration_unit}. "
+                f"for {self.renting.rent_duration} {rent_duration_unit} "
+                f"by {self.renting.renter_address}. "
                 f"{get_lending_url(self.contract, self.renting.lending_id)}"
             )
         return msg

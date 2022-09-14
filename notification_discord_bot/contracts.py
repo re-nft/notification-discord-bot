@@ -2,8 +2,16 @@ from abc import ABC, abstractmethod
 from functools import partial
 from operator import attrgetter
 from typing import Any
-from notification_discord_bot.constants import DEFAULT_PAGE_SIZE
+from notification_discord_bot.constants import (
+    DEFAULT_PAGE_SIZE,
+    ETHEREUM_AZRAEL_CONTRACT_NAME,
+    ETHEREUM_SYLVESTER_CONTRACT_NAME,
+    MATIC_SYLVESTER_CONTRACT_NAME,
+    AVALANCHE_WHOOPI_CONTRACT_NAME,
+)
+
 from notification_discord_bot import mixins
+from notification_discord_bot.currency import format_fixed, unpack_price
 from notification_discord_bot.nft import get_nft
 from notification_discord_bot.renft import (
     Chain,
@@ -16,7 +24,10 @@ from notification_discord_bot.renft import (
     ReNFTRentingDatum,
     TransactionType,
 )
-from notification_discord_bot.utils import query_the_graph
+from notification_discord_bot.utils import (
+    query_the_graph,
+    resolve_payment_token_details,
+)
 from notification_discord_bot.queries import (
     AZRAEL_GET_LENDINGS_QUERY,
     AZRAEL_GET_RENTINGS_QUERY,
@@ -28,8 +39,6 @@ from notification_discord_bot.queries import (
 
 
 class AzraelContract(ReNFTContract, mixins.BlockchainContractMixin):
-    name = "Azrael"
-
     def transform_lending(self, lending: dict[str, Any]) -> ReNFTLendingDatum:
         transaction_type = TransactionType.LEND
         nft = partial(get_nft, lending["nftAddress"], lending["tokenId"], self.chain())
@@ -38,10 +47,10 @@ class AzraelContract(ReNFTContract, mixins.BlockchainContractMixin):
             lending_id=int(lending["id"]),
             lender_address=lending["lenderAddress"],
             max_rent_duration=lending["maxRentDuration"],
-            daily_rent_price=lending["dailyRentPrice"],
+            daily_rent_price=unpack_price(lending["dailyRentPrice"]),
             lent_amount=lending["lentAmount"],
             payment_token=PaymentToken(int(lending["paymentToken"])),
-            collateral=lending["nftPrice"],
+            collateral=unpack_price(lending["nftPrice"]),
             lent_at=lending["lentAt"],
             upfront_rent_fee=None,
         )
@@ -63,8 +72,8 @@ class AzraelContract(ReNFTContract, mixins.BlockchainContractMixin):
             rent_duration=renting["rentDuration"],
             rented_at=renting["rentedAt"],
             payment_token=PaymentToken(int(renting["lending"]["paymentToken"])),
-            collateral=renting["lending"]["nftPrice"],
-            daily_rent_price=renting["lending"]["dailyRentPrice"],
+            collateral=unpack_price(renting["lending"]["nftPrice"]),
+            daily_rent_price=unpack_price(renting["lending"]["dailyRentPrice"]),
             lender_address=renting["lending"]["lenderAddress"],
             upfront_rent_fee=None,
         )
@@ -89,8 +98,6 @@ class AzraelContract(ReNFTContract, mixins.BlockchainContractMixin):
 
 
 class SylvesterContract(ReNFTContract, mixins.BlockchainContractMixin):
-    name = "Sylvester"
-
     def transform_lending(self, lending: dict[str, Any]) -> ReNFTLendingDatum:
         transaction_type = TransactionType.LEND
         nft = partial(get_nft, lending["nftAddress"], lending["tokenID"], self.chain())
@@ -99,7 +106,7 @@ class SylvesterContract(ReNFTContract, mixins.BlockchainContractMixin):
             lending_id=int(lending["id"]),
             lender_address=lending["lenderAddress"],
             max_rent_duration=lending["maxRentDuration"],
-            daily_rent_price=lending["dailyRentPrice"],
+            daily_rent_price=unpack_price(lending["dailyRentPrice"]),
             lent_amount=lending["lendAmount"],
             payment_token=PaymentToken(int(lending["paymentToken"])),
             collateral=None,
@@ -125,7 +132,7 @@ class SylvesterContract(ReNFTContract, mixins.BlockchainContractMixin):
             rented_at=renting["rentedAt"],
             payment_token=PaymentToken(int(renting["lending"]["paymentToken"])),
             collateral=None,
-            daily_rent_price=renting["lending"]["dailyRentPrice"],
+            daily_rent_price=unpack_price(renting["lending"]["dailyRentPrice"]),
             lender_address=renting["lending"]["lenderAddress"],
             upfront_rent_fee=None,
         )
@@ -150,11 +157,11 @@ class SylvesterContract(ReNFTContract, mixins.BlockchainContractMixin):
 
 
 class WhoopiContract(ReNFTContract, mixins.BlockchainContractMixin):
-    name = "Whoopi"
-
     def transform_lending(self, lending: dict[str, Any]) -> ReNFTLendingDatum:
         transaction_type = TransactionType.LEND
         nft = partial(get_nft, lending["nftAddress"], lending["tokenId"], self.chain())
+        payment_token = PaymentToken(int(lending["paymentToken"]))
+        payment_token_details = resolve_payment_token_details(self, payment_token)
         _lending = Lending(
             nft=nft,
             lending_id=int(lending["id"]),
@@ -162,10 +169,14 @@ class WhoopiContract(ReNFTContract, mixins.BlockchainContractMixin):
             max_rent_duration=lending["maxRentDuration"],
             daily_rent_price=None,
             lent_amount=1,
-            payment_token=PaymentToken(int(lending["paymentToken"])),
+            payment_token=payment_token,
             collateral=None,
             lent_at=lending["lentAt"],
-            upfront_rent_fee=lending["upfrontRentFee"],
+            upfront_rent_fee=float(
+                format_fixed(
+                    int(lending["upfrontRentFee"]), payment_token_details.scale
+                )
+            ),
         )
         return ReNFTLendingDatum(self, transaction_type, _lending)
 
@@ -177,6 +188,8 @@ class WhoopiContract(ReNFTContract, mixins.BlockchainContractMixin):
             renting["lending"]["tokenId"],
             self.chain(),
         )
+        payment_token = PaymentToken(int(renting["lending"]["paymentToken"]))
+        payment_token_details = resolve_payment_token_details(self, payment_token)
         _renting = Renting(
             nft=nft,
             lending_id=renting["lending"]["id"],
@@ -184,11 +197,16 @@ class WhoopiContract(ReNFTContract, mixins.BlockchainContractMixin):
             renter_address=renting["renterAddress"],
             rent_duration=renting["rentDuration"],
             rented_at=renting["rentedAt"],
-            payment_token=PaymentToken(int(renting["lending"]["paymentToken"])),
+            payment_token=payment_token,
             collateral=None,
             daily_rent_price=None,
             lender_address=renting["lending"]["lenderAddress"],
-            upfront_rent_fee=renting["lending"]["upfrontRentFee"],
+            upfront_rent_fee=float(
+                format_fixed(
+                    int(renting["lending"]["upfrontRentFee"]),
+                    payment_token_details.scale,
+                )
+            ),
         )
         return ReNFTRentingDatum(self, transaction_type, _renting)
 
@@ -211,28 +229,28 @@ class WhoopiContract(ReNFTContract, mixins.BlockchainContractMixin):
 
 
 class EthereumAzraelContract(mixins.EthereumAzraelMixin, AzraelContract):
-    name = "Ethereum Azrael"
+    name = ETHEREUM_AZRAEL_CONTRACT_NAME
 
     def chain(self) -> Chain:
         return Chain.ETH
 
 
 class EthereumSylvesterContract(mixins.EthereumSylvesterMixin, SylvesterContract):
-    name = "Ethereum Sylvester"
+    name = ETHEREUM_SYLVESTER_CONTRACT_NAME
 
     def chain(self) -> Chain:
         return Chain.ETH
 
 
 class MaticSylvesterContract(mixins.MaticSylvesterMixin, SylvesterContract):
-    name = "Matic Sylvester"
+    name = MATIC_SYLVESTER_CONTRACT_NAME
 
     def chain(self) -> Chain:
         return Chain.MATIC
 
 
 class AvalancheWhoopiContract(mixins.AvalancheWhoopiMixin, WhoopiContract):
-    name = "Avalanche Whoopi"
+    name = AVALANCHE_WHOOPI_CONTRACT_NAME
 
     def chain(self) -> Chain:
         return Chain.AVAX

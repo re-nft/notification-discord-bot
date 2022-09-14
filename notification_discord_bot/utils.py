@@ -22,6 +22,12 @@ def discord_enabled() -> bool:
     return constants.DISCORD_WEBHOOK is not None
 
 
+def resolve_payment_token_details(
+    contract: ReNFTContract, token: constants.PaymentToken
+) -> constants.PaymentTokenDetails:
+    return constants.RESOLVERS[contract.name][token]
+
+
 def get_rent_duration_unit(contract: ReNFTContract) -> str:
     from notification_discord_bot.contracts import AvalancheWhoopiContract
 
