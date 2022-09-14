@@ -1,0 +1,28 @@
+version: "3.9"
+
+services:
+  dev:
+    image: renft/notification-discord-bot
+    env_file:
+      - $PWD/.env
+    restart: always
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
+    networks:
+      - web
+
+  watchtower:
+    image: containrrr/watchtower
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    ports:
+      - "8080:8080"
+    restart: always
+    command: --label-enable --cleanup --interval 30
+    networks:
+      - web
+
+networks:
+  web:
