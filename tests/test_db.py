@@ -1,8 +1,10 @@
+import json
 from dataclasses import dataclass
+
 import pytest
+
 from notification_discord_bot import db
 from notification_discord_bot.constants import DB_PATH
-import json
 
 
 @dataclass

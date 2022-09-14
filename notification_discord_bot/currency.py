@@ -1,5 +1,6 @@
 import math
 import re
+
 from notification_discord_bot.constants import (
     BITSIZE_MAX_VALUE,
     HALF_BITSIZE,
@@ -47,7 +48,7 @@ def to_padded_hex(number: int, bitsize: int) -> str:
 
 def scale_decimal(num: str) -> float:
     MAX_LEN = 4
-    for i in range(0, MAX_LEN - len(num)):
+    for _ in range(0, MAX_LEN - len(num)):
         num = num + "0"
     return float(num)
 
@@ -74,23 +75,19 @@ def pack_price(price: str) -> str:
 
 def unpack_price(price: str) -> float:
     num_hex = decimal_to_padded_hex_string(int(price, 16), PRICE_BITSIZE)[2:]
-    whole = int(num_hex[0:4], 16)
-    decimal = int(num_hex[4:], 16)
-    if whole > 9999:
-        whole = 9999
-    if decimal > 9999:
-        decimal = 9999
+    whole = min(int(num_hex[0:4], 16), 9999)
+    decimal = min(int(num_hex[4:], 16), 9999)
 
     decimal_str = str(decimal)
     MAX_LEN = 4
-    for i in range(0, MAX_LEN - len(decimal_str)):
+    for _ in range(0, MAX_LEN - len(decimal_str)):
         decimal_str = "0" + decimal_str
 
     return float(f"{whole}.{decimal_str}")
 
 
 def get_multiplier(decimals: int) -> str:
-    if decimals >= 0 and decimals <= 256 and not decimals % 1:
+    if 0 <= decimals <= 256 and not decimals % 1:
         return "1" + ZEROS[0:decimals]
     raise ValueError(f"Invalid decimal size: {decimals}")
 

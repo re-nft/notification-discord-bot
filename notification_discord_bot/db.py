@@ -1,11 +1,9 @@
-from abc import ABC, abstractmethod
-from os.path import exists
-from datetime import datetime
-from dataclasses import asdict, dataclass
 import json
-from typing import Any, Optional
+from abc import ABC
+from dataclasses import asdict, dataclass
+from os.path import exists
+
 from notification_discord_bot.constants import DB_PATH
-from notification_discord_bot.renft import ReNFTDatum, TransactionType
 
 
 def get_collection(collection_name: str):
@@ -25,13 +23,14 @@ def document_matches_builder(**kwargs):
 @dataclass
 class Model(ABC):
     @property
-    def unique_index(self) -> set[str]:
-        raise NotImplemented
+    @classmethod
+    def unique_index(cls) -> set[str]:
+        raise NotImplementedError()
 
     @property
     @classmethod
     def collection_name(cls) -> str:
-        raise NotImplemented
+        raise NotImplementedError()
 
     @classmethod
     def assert_kwargs_are_unique(cls, **kwargs):
@@ -41,12 +40,12 @@ class Model(ABC):
             )
 
     @classmethod
-    def filter(cls, **kwargs):
+    def filter(cls, **kwargs): # -> list[Self] awaiting 3.11 for typing
         coll = get_collection(cls.collection_name)  # type: ignore
         return [cls(**doc) for doc in coll if document_matches_builder(**kwargs)(doc)]
 
     @classmethod
-    def get_or_none(cls, **kwargs):
+    def get_or_none(cls, **kwargs): # -> Optional[Self] awaiting 3.11 for typing
         cls.assert_kwargs_are_unique(**kwargs)
         l = cls.filter(**kwargs)
         if len(l) == 0:
@@ -60,7 +59,7 @@ class Model(ABC):
         cls.assert_kwargs_are_unique(**kwargs)
         coll = get_collection(cls.collection_name)
         existing_doc = cls.get_or_none(**kwargs)
-        if defaults == None:
+        if defaults is None:
             defaults = {}
         if existing_doc is not None:
             new_doc = asdict(existing_doc)
@@ -84,6 +83,7 @@ def is_initialized() -> bool:
 
 def initialize():
     with open(DB_PATH, "w") as f:
+        # pylint: disable=unused-import
         from notification_discord_bot import models
 
         all_models = Model.__subclasses__()

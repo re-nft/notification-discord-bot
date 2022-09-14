@@ -1,6 +1,7 @@
+from dataclasses import dataclass
+
 from notification_discord_bot.db import Model
 from notification_discord_bot.renft import TransactionType
-from dataclasses import dataclass
 
 
 @dataclass

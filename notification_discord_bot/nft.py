@@ -1,6 +1,8 @@
 import json
-import requests
 from functools import cache
+
+import requests
+
 from notification_discord_bot.constants import NFT_PORT_API_KEY
 from notification_discord_bot.logger import logger
 from notification_discord_bot.renft import Chain, NonFungibleToken
@@ -29,6 +31,8 @@ def get_nft_with_nft_port(
 
 @cache
 def get_castle_crush_nft(address: str, token_id: str, chain: Chain) -> NonFungibleToken:
+    if Chain.AVAX != chain:
+        raise AssertionError("Invalid chain for Castle Crush.")
     hex_token_id = hex(int(token_id))[2:].rjust(64, "0")
     query_url = f"https://castle-crush-crypto-bucket.s3.amazonaws.com/metadata/{hex_token_id}.json"
     res = requests.get(query_url)

@@ -1,4 +1,5 @@
 import pytest
+
 from notification_discord_bot.currency import (
     bytes_to_nibbles,
     format_fixed,

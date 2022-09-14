@@ -1,6 +1,5 @@
-from notification_discord_bot import constants
-from notification_discord_bot.logger import logger
 from notification_discord_bot.contracts import all_contracts
+from notification_discord_bot.logger import logger
 from notification_discord_bot.models import ReNFTModel
 
 

@@ -1,11 +1,13 @@
 #!/usr/bin/env python
 
-import discord
 import time
+
+import discord
 import tweepy
+
+from notification_discord_bot import constants, db, utils
 from notification_discord_bot.contracts import all_contracts
 from notification_discord_bot.logger import logger
-from notification_discord_bot import constants, db, utils
 
 
 class MessageSender:

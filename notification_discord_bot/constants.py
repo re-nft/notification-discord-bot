@@ -1,7 +1,9 @@
 import os
 from dataclasses import dataclass
-from typing import Type
+
 from dotenv import load_dotenv
+
+from notification_discord_bot.renft import PaymentToken
 
 load_dotenv()
 
@@ -49,8 +51,6 @@ MATIC_SYLVESTER_CONTRACT_NAME = "Matic Sylvester"
 AVALANCHE_WHOOPI_CONTRACT_NAME = "Avalanche Whoopi"
 
 # Resolver related
-
-from notification_discord_bot.renft import ReNFTContract, PaymentToken
 
 
 @dataclass

@@ -1,6 +1,7 @@
 import json
-from typing import Any
+
 import requests
+
 from notification_discord_bot import constants
 from notification_discord_bot.contracts import ReNFTContract
 from notification_discord_bot.logger import logger
@@ -47,8 +48,6 @@ def get_profile_url(contract: ReNFTContract, address: str):
 
 
 def get_lending_url(contract: ReNFTContract, lending_id: str):
-    from notification_discord_bot.renft import Chain
-
     from notification_discord_bot.contracts import AvalancheWhoopiContract
 
     if isinstance(contract, AvalancheWhoopiContract):

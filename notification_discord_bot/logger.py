@@ -1,5 +1,6 @@
 import logging
 import sys
+
 from notification_discord_bot.constants import F_LOGLEVEL, LOGLEVEL, S_LOGLEVEL
 
 logger = logging.getLogger("ReNFTLogger")

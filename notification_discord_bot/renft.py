@@ -1,8 +1,9 @@
 from abc import ABC, abstractmethod
-from enum import Enum, IntEnum, unique
 from dataclasses import dataclass
+from enum import Enum, IntEnum, unique
 from operator import attrgetter
 from typing import Callable, Optional
+
 import discord
 
 
@@ -235,8 +236,8 @@ class ReNFTRentingDatum(ReNFTDatum):
 
     def build_discord_message(self):
         from notification_discord_bot.utils import (
-            get_profile_url,
             get_lending_url,
+            get_profile_url,
             get_rent_duration_unit,
         )
 

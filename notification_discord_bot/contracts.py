@@ -1,33 +1,16 @@
-from abc import ABC, abstractmethod
 from functools import partial
-from operator import attrgetter
 from typing import Any
+
+from notification_discord_bot import mixins
 from notification_discord_bot.constants import (
+    AVALANCHE_WHOOPI_CONTRACT_NAME,
     DEFAULT_PAGE_SIZE,
     ETHEREUM_AZRAEL_CONTRACT_NAME,
     ETHEREUM_SYLVESTER_CONTRACT_NAME,
     MATIC_SYLVESTER_CONTRACT_NAME,
-    AVALANCHE_WHOOPI_CONTRACT_NAME,
 )
-
-from notification_discord_bot import mixins
 from notification_discord_bot.currency import format_fixed, unpack_price
 from notification_discord_bot.nft import get_nft
-from notification_discord_bot.renft import (
-    Chain,
-    Lending,
-    PaymentToken,
-    Renting,
-    ReNFTContract,
-    ReNFTDatum,
-    ReNFTLendingDatum,
-    ReNFTRentingDatum,
-    TransactionType,
-)
-from notification_discord_bot.utils import (
-    query_the_graph,
-    resolve_payment_token_details,
-)
 from notification_discord_bot.queries import (
     AZRAEL_GET_LENDINGS_QUERY,
     AZRAEL_GET_RENTINGS_QUERY,
@@ -35,6 +18,21 @@ from notification_discord_bot.queries import (
     SYLVESTER_GET_RENTINGS_QUERY,
     WHOOPI_GET_LENDINGS_QUERY,
     WHOOPI_GET_RENTINGS_QUERY,
+)
+from notification_discord_bot.renft import (
+    Chain,
+    Lending,
+    PaymentToken,
+    ReNFTContract,
+    ReNFTDatum,
+    ReNFTLendingDatum,
+    ReNFTRentingDatum,
+    Renting,
+    TransactionType,
+)
+from notification_discord_bot.utils import (
+    query_the_graph,
+    resolve_payment_token_details,
 )
 
 
