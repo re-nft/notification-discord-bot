@@ -1,13 +1,16 @@
 from functools import partial
-from typing import Any
+from typing import Any, ClassVar
 
-from notification_discord_bot import mixins
 from notification_discord_bot.constants import (
     AVALANCHE_WHOOPI_CONTRACT_NAME,
+    AVALANCHE_WHOOPI_SUBGRAPH_URL,
     DEFAULT_PAGE_SIZE,
     ETHEREUM_AZRAEL_CONTRACT_NAME,
+    ETHEREUM_AZRAEL_SUBGRAPH_URL,
     ETHEREUM_SYLVESTER_CONTRACT_NAME,
+    ETHEREUM_SYLVESTER_SUBGRAPH_URL,
     MATIC_SYLVESTER_CONTRACT_NAME,
+    MATIC_SYLVESTER_SUBGRAPH_URL,
 )
 from notification_discord_bot.currency import format_fixed, unpack_price
 from notification_discord_bot.data import ReNFTLendingDatum, ReNFTRentingDatum
@@ -39,7 +42,7 @@ def resolve_payment_token_details(
     return RESOLVERS[contract.name][token]
 
 
-class AzraelContract(ReNFTContract, mixins.BlockchainContractMixin):
+class AzraelContract(ReNFTContract):
     def transform_lending(self, lending: dict[str, Any]) -> ReNFTLendingDatum:
         transaction_type = TransactionType.LEND
         nft = partial(get_nft, lending["nftAddress"], lending["tokenId"], self.chain())
@@ -98,7 +101,7 @@ class AzraelContract(ReNFTContract, mixins.BlockchainContractMixin):
         return False
 
 
-class SylvesterContract(ReNFTContract, mixins.BlockchainContractMixin):
+class SylvesterContract(ReNFTContract):
     def transform_lending(self, lending: dict[str, Any]) -> ReNFTLendingDatum:
         transaction_type = TransactionType.LEND
         nft = partial(get_nft, lending["nftAddress"], lending["tokenID"], self.chain())
@@ -157,7 +160,7 @@ class SylvesterContract(ReNFTContract, mixins.BlockchainContractMixin):
         return True
 
 
-class WhoopiContract(ReNFTContract, mixins.BlockchainContractMixin):
+class WhoopiContract(ReNFTContract):
     def transform_lending(self, lending: dict[str, Any]) -> ReNFTLendingDatum:
         transaction_type = TransactionType.LEND
         nft = partial(get_nft, lending["nftAddress"], lending["tokenId"], self.chain())
@@ -229,29 +232,33 @@ class WhoopiContract(ReNFTContract, mixins.BlockchainContractMixin):
         return True
 
 
-class EthereumAzraelContract(mixins.EthereumAzraelMixin, AzraelContract):
+class EthereumAzraelContract(AzraelContract):
     name = ETHEREUM_AZRAEL_CONTRACT_NAME
+    query_url: ClassVar[str] = ETHEREUM_AZRAEL_SUBGRAPH_URL
 
     def chain(self) -> Chain:
         return Chain.ETH
 
 
-class EthereumSylvesterContract(mixins.EthereumSylvesterMixin, SylvesterContract):
+class EthereumSylvesterContract(SylvesterContract):
     name = ETHEREUM_SYLVESTER_CONTRACT_NAME
+    query_url: ClassVar[str] = ETHEREUM_SYLVESTER_SUBGRAPH_URL
 
     def chain(self) -> Chain:
         return Chain.ETH
 
 
-class MaticSylvesterContract(mixins.MaticSylvesterMixin, SylvesterContract):
+class MaticSylvesterContract(SylvesterContract):
     name = MATIC_SYLVESTER_CONTRACT_NAME
+    query_url: ClassVar[str] = MATIC_SYLVESTER_SUBGRAPH_URL
 
     def chain(self) -> Chain:
         return Chain.MATIC
 
 
-class AvalancheWhoopiContract(mixins.AvalancheWhoopiMixin, WhoopiContract):
+class AvalancheWhoopiContract(WhoopiContract):
     name = AVALANCHE_WHOOPI_CONTRACT_NAME
+    query_url: ClassVar[str] = AVALANCHE_WHOOPI_SUBGRAPH_URL
 
     def chain(self) -> Chain:
         return Chain.AVAX

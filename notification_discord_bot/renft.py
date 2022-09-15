@@ -35,6 +35,13 @@ class PaymentToken(IntEnum):
     ACS = 7
 
 
+EXPLORER_CHAIN_MAPPING = {
+    Chain.ETH: "https://etherscan.io/address",
+    Chain.MATIC: "https://polygonscan.com/address",
+    Chain.AVAX: "https://snowtrace.io/address",
+}
+
+
 @dataclass
 class NonFungibleToken:
     name: str
@@ -103,6 +110,11 @@ class ReNFTContract(ABC):
     def name(self) -> str:
         pass
 
+    @property
+    @abstractmethod
+    def query_url(self) -> str:
+        pass
+
 
 class ReNFTDatum(ABC):
     def __init__(self, contract: ReNFTContract, transaction_type: TransactionType):
@@ -126,21 +138,16 @@ class ReNFTDatum(ABC):
         pass
 
 
-def get_lending_url(contract: ReNFTContract, lending_id: str):
+def get_lending_url(contract: ReNFTContract, lending_id: str | int):
     if contract.name == AVALANCHE_WHOOPI_CONTRACT_NAME:
         return f"{RENFT_BASE_URL}/collections/castle-crush?lendingId={lending_id}"
     contract_type = "collateral_free" if contract.is_collateral_free() else "collateral"
     return f"{RENFT_BASE_URL}?ctx={contract_type}&lendingId={lending_id}"
 
 
-def get_profile_url(contract: "ReNFTContract", address: str):
+def get_profile_url(contract: ReNFTContract, address: str):
     chain = contract.chain()
-    chain_mapping = {
-        Chain.ETH: f"https://etherscan.io/address/{address}",
-        Chain.MATIC: f"https://polygonscan.com/address/{address}",
-        Chain.AVAX: f"https://snowtrace.io/address/{address}",
-    }
-    return chain_mapping[chain]
+    return f"{EXPLORER_CHAIN_MAPPING[chain]}/{address}"
 
 
 def get_rent_duration_unit(contract: ReNFTContract) -> str:

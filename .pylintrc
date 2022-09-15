@@ -104,7 +104,8 @@ disable=invalid-name,
         no-else-return,
         consider-using-with,
         too-many-statements,
-        fixme
+        fixme,
+        unsupported-binary-operation
 
 # Enable the message, report, category or checker with the given id(s). You can
 # either give multiple identifier separated by comma (,) or put this option

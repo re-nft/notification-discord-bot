@@ -69,21 +69,15 @@ class ReNFTLendingDatum(ReNFTDatum):
         rent_duration_unit = get_rent_duration_unit(self.contract)
 
         if self.lending.daily_rent_price is not None:
-            msg = (
-                f"{nft.name} lent for "
-                f"{self.lending.daily_rent_price} {self.lending.payment_token.name} "
-                f"per day for a max of {self.lending.max_rent_duration} {rent_duration_unit} "
-                f"by {self.lending.lender_address}. "
-                f"{get_lending_url(self.contract, self.lending.lending_id)}"
-            )
+            lent_price = self.lending.daily_rent_price
         else:
-            msg = (
-                f"{nft.name} lent for a fee of "
-                f"{self.lending.upfront_rent_fee} {self.lending.payment_token.name} "
-                f"for a max of {self.lending.max_rent_duration} {rent_duration_unit} "
-                f"by {self.lending.lender_address}. "
-                f"{get_lending_url(self.contract, self.lending.lending_id)}"
-            )
+            lent_price = f"a fee of {self.lending.upfront_rent_fee}"
+        msg = (
+            f"{nft.name} lent for {lent_price} {self.lending.payment_token.name} "
+            f"for a max of {self.lending.max_rent_duration} {rent_duration_unit} "
+            f"by {self.lending.lender_address}. "
+            f"{get_lending_url(self.contract, self.lending.lending_id)}"
+        )
         return msg
 
     def has_been_observed(self) -> bool:
@@ -157,21 +151,15 @@ class ReNFTRentingDatum(ReNFTDatum):
         nft = self.renting.nft()
         rent_duration_unit = get_rent_duration_unit(self.contract)
         if self.renting.daily_rent_price is not None:
-            msg = (
-                f"{nft.name} rented for "
-                f"{self.renting.daily_rent_price} {self.renting.payment_token.name} "
-                f"per day for {self.renting.rent_duration} {rent_duration_unit} "
-                f"by {self.renting.renter_address}. "
-                f"{get_lending_url(self.contract, self.renting.lending_id)}"
-            )
+            rent_price = self.renting.daily_rent_price
         else:
-            msg = (
-                f"{nft.name} rented for a fee of "
-                f"{self.renting.upfront_rent_fee} {self.renting.payment_token.name} "
-                f"for {self.renting.rent_duration} {rent_duration_unit} "
-                f"by {self.renting.renter_address}. "
-                f"{get_lending_url(self.contract, self.renting.lending_id)}"
-            )
+            rent_price = f"a fee of {self.renting.upfront_rent_fee}"
+        msg = (
+            f"{nft.name} rented for {rent_price} {self.renting.payment_token.name} "
+            f"for {self.renting.rent_duration} {rent_duration_unit} "
+            f"by {self.renting.renter_address}. "
+            f"{get_lending_url(self.contract, self.renting.lending_id)}"
+        )
         return msg
 
     def has_been_observed(self) -> bool:
