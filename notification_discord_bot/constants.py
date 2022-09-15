@@ -10,7 +10,7 @@ ETHEREUM_SYLVESTER_SUBGRAPH_URL = os.environ["ETHEREUM_SYLVESTER_SUBGRAPH_URL"]
 MATIC_SYLVESTER_SUBGRAPH_URL = os.environ["MATIC_SYLVESTER_SUBGRAPH_URL"]
 AVALANCHE_WHOOPI_SUBGRAPH_URL = os.environ["AVALANCHE_WHOOPI_SUBGRAPH_URL"]
 
-NFT_PORT_API_KEY = os.environ["NFT_PORT_API_KEY"]
+ALCHEMY_API_KEY = os.environ["ALCHEMY_API_KEY"]
 
 # Optional env variables
 DISCORD_WEBHOOK = os.getenv("DISCORD_WEBHOOK")
@@ -20,6 +20,7 @@ TWEEPY_API_SECRET = os.getenv("TWEEPY_API_SECRET")
 TWEEPY_ACCESS_TOKEN = os.getenv("TWEEPY_ACCESS_TOKEN")
 TWEEPY_ACCESS_TOKEN_SECRET = os.getenv("TWEEPY_ACCESS_TOKEN_SECRET")
 
+NFT_PORT_API_KEY = os.getenv("NFT_PORT_API_KEY")
 
 # Optional env variables with defaults
 DB_PATH = os.getenv("DB_PATH", "db.json")
@@ -30,6 +31,8 @@ S_LOGLEVEL = os.getenv("S_LOGLEVEL", "INFO").upper()
 
 # Static constants
 RENFT_BASE_URL = "https://v2.renft.io"
+ETHEREUM_ALCHEMY_BASE_URL = f"https://eth-mainnet.g.alchemy.com/v2/{ALCHEMY_API_KEY}"
+POLYGON_ALCHEMY_BASE_URL = f"https://polygon-mainnet.g.alchemy.com/v2/{ALCHEMY_API_KEY}"
 SLEEP_TIME_S = 30
 DEFAULT_PAGE_SIZE = 100
 
