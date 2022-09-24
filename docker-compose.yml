@@ -20,7 +20,7 @@ services:
     ports:
       - "8080:8080"
     restart: always
-    command: --label-enable --cleanup --interval 30
+    command: --include-stopped --label-enable --cleanup --interval 30
     networks:
       - web
 
