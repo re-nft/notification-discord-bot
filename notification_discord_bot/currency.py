@@ -53,7 +53,7 @@ def scale_decimal(num: str) -> float:
     return float(num)
 
 
-def pack_price(price: str) -> str:
+def pack_price(price: str | float) -> str:
     if float(price) > MAX_PRICE:
         raise ValueError(f"Supplied price exceeds ${MAX_PRICE}")
 
