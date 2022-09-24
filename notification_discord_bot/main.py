@@ -22,10 +22,10 @@ class MessageSender:
 
     def authenticate_twitter(self):
         auth = tweepy.OAuthHandler(
-            constants.TWEEPY_API_KEY, constants.TWEEPY_API_SECRET
-        )
-        auth.set_access_token(
-            constants.TWEEPY_ACCESS_TOKEN, constants.TWEEPY_ACCESS_TOKEN_SECRET
+            constants.TWEEPY_API_KEY,
+            constants.TWEEPY_API_SECRET,
+            constants.TWEEPY_ACCESS_TOKEN,
+            constants.TWEEPY_ACCESS_TOKEN_SECRET,
         )
         self.twitter_api = tweepy.API(auth, wait_on_rate_limit=True)
         self.twitter_api.verify_credentials()
