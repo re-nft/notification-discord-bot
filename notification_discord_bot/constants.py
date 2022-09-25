@@ -1,4 +1,5 @@
 import os
+from dataclasses import dataclass
 
 from dotenv import load_dotenv
 
@@ -50,3 +51,9 @@ ETHEREUM_AZRAEL_CONTRACT_NAME = "Ethereum Azrael"
 ETHEREUM_SYLVESTER_CONTRACT_NAME = "Ethereum Sylvester"
 MATIC_SYLVESTER_CONTRACT_NAME = "Matic Sylvester"
 AVALANCHE_WHOOPI_CONTRACT_NAME = "Avalanche Whoopi"
+
+
+@dataclass
+class TwitterMessage:
+    message: str
+    image_url: str

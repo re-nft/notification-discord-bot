@@ -1,8 +1,13 @@
 #!/usr/bin/env python
 
+import os
 import time
+from dataclasses import asdict
+from tempfile import NamedTemporaryFile
+from urllib.parse import urlparse
 
 import discord
+import requests
 import tweepy
 
 from notification_discord_bot import constants, utils
@@ -35,11 +40,23 @@ class MessageSender:
         if utils.discord_enabled():
             self.discord_webhook.send(embed=msg)
 
-    def send_twitter_message(self, msg):
-        logger.debug(msg)
+    def send_twitter_message(self, msg: constants.TwitterMessage):
+        logger.debug(asdict(msg))
         if utils.twitter_enabled():
             try:
-                self.twitter_api.update_status(msg)
+                res = requests.get(msg.image_url, timeout=20)
+                res.raise_for_status()
+                a = urlparse(msg.image_url)
+                filename = os.path.basename(a.path)
+                with NamedTemporaryFile(suffix=filename) as t:
+                    t.write(res.content)
+                    media = self.twitter_api.media_upload(t.name)
+                    media_ids = [media.media_ids]
+            except:
+                logger.exception(f"Cannot get image {msg.image_url}")
+                media_ids = []
+            try:
+                self.twitter_api.update_status(status=msg.message, media_ids=media_ids)
             except tweepy.errors.Forbidden:
                 logger.exception("Tweepy 403")
 

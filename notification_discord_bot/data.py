@@ -2,6 +2,7 @@ from operator import attrgetter
 
 import discord
 
+from notification_discord_bot.constants import TwitterMessage
 from notification_discord_bot.models import ReNFTModel
 from notification_discord_bot.renft import (
     Lending,
@@ -78,7 +79,7 @@ class ReNFTLendingDatum(ReNFTDatum):
             f"by {self.lending.lender_address}. "
             f"{get_lending_url(self.contract, self.lending.lending_id)}"
         )
-        return msg
+        return TwitterMessage(msg, nft.image_url)
 
     def has_been_observed(self) -> bool:
         m = ReNFTModel.get_or_none(
@@ -160,7 +161,7 @@ class ReNFTRentingDatum(ReNFTDatum):
             f"by {self.renting.renter_address}. "
             f"{get_lending_url(self.contract, self.renting.lending_id)}"
         )
-        return msg
+        return TwitterMessage(msg, nft.image_url)
 
     def has_been_observed(self) -> bool:
         m = ReNFTModel.get_or_none(

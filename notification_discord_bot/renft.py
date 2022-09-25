@@ -8,6 +8,7 @@ import discord
 from notification_discord_bot.constants import (
     AVALANCHE_WHOOPI_CONTRACT_NAME,
     RENFT_BASE_URL,
+    TwitterMessage,
 )
 
 
@@ -126,7 +127,7 @@ class ReNFTDatum(ABC):
         pass
 
     @abstractmethod
-    def build_twitter_message(self) -> str:
+    def build_twitter_message(self) -> TwitterMessage:
         pass
 
     @abstractmethod
