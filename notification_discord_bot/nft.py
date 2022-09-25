@@ -12,6 +12,7 @@ from notification_discord_bot.constants import (
 )
 from notification_discord_bot.logger import logger
 from notification_discord_bot.renft import Chain, NonFungibleToken
+from notification_discord_bot.utils import normalize_ipfs_url
 
 
 @dataclass
@@ -23,8 +24,10 @@ class RankedUrl:
 def get_ranked_url(url: str, min_rank: int = 0) -> RankedUrl:
     if "alchemyapi" in url:
         return RankedUrl(4, url)
-    if "ipfs" in url:
+    if url.startswith("ipfs"):
         return RankedUrl(1, url)
+    if "ipfs" in url:
+        return RankedUrl(3, url)
     return RankedUrl(min_rank, url)
 
 
@@ -72,7 +75,7 @@ def get_nft_with_alchemy(address: str, token_id: str, chain: Chain) -> NonFungib
         nft_address=data["contract"]["address"],
         token_id=data["id"]["tokenId"],
         description=data["metadata"]["description"],
-        image_url=get_image_url_from_alchemy_nft(data),
+        image_url=normalize_ipfs_url(get_image_url_from_alchemy_nft(data)),
     )
 
 

@@ -31,6 +31,7 @@ S_LOGLEVEL = os.getenv("S_LOGLEVEL", "INFO").upper()
 
 # Static constants
 RENFT_BASE_URL = "https://v2.renft.io"
+IPFS_GATEWAY_URL = "https://ipfs.io/ipfs"
 ETHEREUM_ALCHEMY_BASE_URL = f"https://eth-mainnet.g.alchemy.com/v2/{ALCHEMY_API_KEY}"
 POLYGON_ALCHEMY_BASE_URL = f"https://polygon-mainnet.g.alchemy.com/v2/{ALCHEMY_API_KEY}"
 SLEEP_TIME_S = 30

@@ -39,3 +39,10 @@ def query_the_graph(
         logger.error(f"Error in {query_url} with query:\n{the_graph_query}")
         raise RuntimeError(str(errors))
     return data
+
+
+def normalize_ipfs_url(url: str) -> str:
+    if not url.startswith("ipfs://"):
+        return url
+    suffix = url.partition("ipfs://")[2]
+    return f"{constants.IPFS_GATEWAY_URL}/{suffix}"
