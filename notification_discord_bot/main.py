@@ -11,7 +11,7 @@ import requests
 import tweepy
 
 from notification_discord_bot import constants, utils
-from notification_discord_bot.contracts import all_contracts
+from notification_discord_bot.contracts import all_contracts, contract_is_enabled
 from notification_discord_bot.logger import logger
 from notification_discord_bot.seed import seed
 
@@ -63,16 +63,17 @@ class MessageSender:
 
 def check_for_updates(msg_sender: MessageSender):
     for contract in all_contracts:
-        for renft_datum in [*contract.get_lendings(), *contract.get_rentings()]:
-            if renft_datum.has_been_observed():
-                continue
-            renft_datum.observe()
+        if contract_is_enabled(contract):
+            for renft_datum in [*contract.get_lendings(), *contract.get_rentings()]:
+                if renft_datum.has_been_observed():
+                    continue
+                renft_datum.observe()
 
-            discord_message = renft_datum.build_discord_message()
-            msg_sender.send_discord_message(discord_message)
+                discord_message = renft_datum.build_discord_message()
+                msg_sender.send_discord_message(discord_message)
 
-            twitter_message = renft_datum.build_twitter_message()
-            msg_sender.send_twitter_message(twitter_message)
+                twitter_message = renft_datum.build_twitter_message()
+                msg_sender.send_twitter_message(twitter_message)
 
 
 def main():

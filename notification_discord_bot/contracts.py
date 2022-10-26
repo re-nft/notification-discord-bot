@@ -42,6 +42,10 @@ def resolve_payment_token_details(
     return RESOLVERS[contract.name][token]
 
 
+def contract_is_enabled(contract: ReNFTContract) -> bool:
+    return contract.query_url is not None and contract.query_url != ""
+
+
 class AzraelContract(ReNFTContract):
     def transform_lending(self, lending: dict[str, Any]) -> ReNFTLendingDatum:
         transaction_type = TransactionType.LEND

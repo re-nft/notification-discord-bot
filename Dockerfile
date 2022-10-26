@@ -1,4 +1,4 @@
-FROM python:3.10.6-slim as python-base
+FROM python:3.10.8-slim as python-base
 
 # python
 ENV PYTHONUNBUFFERED=1
@@ -23,15 +23,17 @@ FROM python-base as builder-base
 RUN apt-get update \
     && apt-get install --no-install-recommends -y \
         curl \
-        build-essential
+        build-essential \
+    && rm -rf /var/lib/apt/lists/*
 
 RUN curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python
 
 WORKDIR $PYSETUP_PATH
 COPY poetry.lock pyproject.toml ./
 
-RUN poetry install --no-dev
 
 COPY notification_discord_bot notification_discord_bot
+
+RUN poetry install --no-dev
 
 CMD ["poetry", "run", "python", "notification_discord_bot/main.py"]

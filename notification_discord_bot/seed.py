@@ -1,5 +1,5 @@
 from notification_discord_bot import db
-from notification_discord_bot.contracts import all_contracts
+from notification_discord_bot.contracts import all_contracts, contract_is_enabled
 from notification_discord_bot.logger import logger
 from notification_discord_bot.models import ReNFTModel
 
@@ -10,7 +10,7 @@ def contract_is_seeded(contract_name: str) -> bool:
 
 def seed_renft():
     for contract in all_contracts:
-        if contract_is_seeded(contract.name):
+        if contract_is_seeded(contract.name) or not contract_is_enabled(contract):
             continue
 
         logger.info(f"Seeding lendings for {contract.name}")
