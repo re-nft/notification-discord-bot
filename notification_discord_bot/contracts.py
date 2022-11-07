@@ -61,6 +61,8 @@ class AzraelContract(ReNFTContract):
             collateral=unpack_price(lending["nftPrice"]),
             lent_at=lending["lentAt"],
             upfront_rent_fee=None,
+            revshare_beneficiaries=None,
+            revshare_portions=None,
         )
         return ReNFTLendingDatum(self, transaction_type, _lending)
 
@@ -84,6 +86,8 @@ class AzraelContract(ReNFTContract):
             daily_rent_price=unpack_price(renting["lending"]["dailyRentPrice"]),
             lender_address=renting["lending"]["lenderAddress"],
             upfront_rent_fee=None,
+            revshare_beneficiaries=None,
+            revshare_portions=None,
         )
         return ReNFTRentingDatum(self, transaction_type, _renting)
 
@@ -120,6 +124,8 @@ class SylvesterContract(ReNFTContract):
             collateral=None,
             lent_at=lending["lentAt"],
             upfront_rent_fee=None,
+            revshare_beneficiaries=None,
+            revshare_portions=None,
         )
         return ReNFTLendingDatum(self, transaction_type, _lending)
 
@@ -143,6 +149,8 @@ class SylvesterContract(ReNFTContract):
             daily_rent_price=unpack_price(renting["lending"]["dailyRentPrice"]),
             lender_address=renting["lending"]["lenderAddress"],
             upfront_rent_fee=None,
+            revshare_beneficiaries=None,
+            revshare_portions=None,
         )
         return ReNFTRentingDatum(self, transaction_type, _renting)
 
@@ -185,6 +193,8 @@ class WhoopiContract(ReNFTContract):
                     int(lending["upfrontRentFee"]), payment_token_details.scale
                 )
             ),
+            revshare_beneficiaries=lending["revShareBeneficiaries"],
+            revshare_portions=lending["revSharePortions"],
         )
         return ReNFTLendingDatum(self, transaction_type, _lending)
 
@@ -215,6 +225,8 @@ class WhoopiContract(ReNFTContract):
                     payment_token_details.scale,
                 )
             ),
+            revshare_beneficiaries=renting["lending"]["revShareBeneficiaries"],
+            revshare_portions=renting["lending"]["revSharePortions"],
         )
         return ReNFTRentingDatum(self, transaction_type, _renting)
 

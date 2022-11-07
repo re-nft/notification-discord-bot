@@ -64,6 +64,8 @@ class Lending:
     collateral: Optional[float]
     lent_at: int
     upfront_rent_fee: Optional[float]
+    revshare_beneficiaries: Optional[list[str]]
+    revshare_portions: Optional[list[int]]
 
     @property
     def id(self):
@@ -83,10 +85,19 @@ class Renting:
     daily_rent_price: Optional[float]
     lender_address: str
     upfront_rent_fee: Optional[float]
+    revshare_beneficiaries: Optional[list[str]]
+    revshare_portions: Optional[list[int]]
 
     @property
     def id(self):
         return str(self.renting_id).rjust(50, "0")
+
+
+@dataclass
+class RewardShare:
+    lender: int
+    renter: int
+    other: int
 
 
 class ReNFTContract(ABC):
@@ -153,3 +164,18 @@ def get_profile_url(contract: ReNFTContract, address: str):
 
 def get_rent_duration_unit(contract: ReNFTContract) -> str:
     return "cycles" if contract.name == AVALANCHE_WHOOPI_CONTRACT_NAME else "days"
+
+
+def calculate_reward_share(
+    lender_address: str, revshare_beneficiaries: list[str], revshare_portions: list[int]
+) -> RewardShare:
+    lender_share = 0
+    renter_share = 100
+    other_share = 0
+    for beneficiary, portion in zip(revshare_beneficiaries, revshare_portions):
+        renter_share -= portion
+        if beneficiary == lender_address:
+            lender_share += portion
+        else:
+            other_share += portion
+    return RewardShare(lender_share, renter_share, other_share)

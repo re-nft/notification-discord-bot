@@ -84,7 +84,9 @@ WHOOPI_GET_LENDINGS_QUERY = """
         nftAddress,
         tokenId,
         lentAt,
-        upfrontRentFee
+        upfrontRentFee,
+        revShareBeneficiaries,
+        revSharePortions
     }
 }
 """
@@ -104,7 +106,9 @@ WHOOPI_GET_RENTINGS_QUERY = """
             lenderAddress,
             nftAddress,
             tokenId,
-            upfrontRentFee
+            upfrontRentFee,
+            revShareBeneficiaries,
+            revSharePortions
         }
     }
 }
