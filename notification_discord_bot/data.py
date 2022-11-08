@@ -30,6 +30,7 @@ class ReNFTLendingDatum(ReNFTDatum):
     def build_discord_message(self):
         nft = self.lending.nft()
         rent_duration_unit = get_rent_duration_unit(self.contract)
+        profile_url = get_profile_url(self.contract, self.lending.lender_address)
 
         msg = discord.Embed(
             title=f"{nft.name} Lent.",
@@ -76,7 +77,7 @@ class ReNFTLendingDatum(ReNFTDatum):
             )
         msg.add_field(
             name="Lender",
-            value=f"{get_profile_url(self.contract, self.lending.lender_address)}",
+            value=f"[{self.lending.lender_address}]({profile_url})",
             inline=False,
         )
         return msg
@@ -142,6 +143,7 @@ class ReNFTRentingDatum(ReNFTDatum):
     def build_discord_message(self):
         nft = self.renting.nft()
         rent_duration_unit = get_rent_duration_unit(self.contract)
+        profile_url = get_profile_url(self.contract, self.renting.renter_address)
 
         msg = discord.Embed(
             title=f"{nft.name} Lent",
@@ -189,7 +191,7 @@ class ReNFTRentingDatum(ReNFTDatum):
             )
         msg.add_field(
             name="Renter",
-            value=f"{get_profile_url(self.contract, self.renting.renter_address)}",
+            value=f"[{self.renting.renter_address}]({profile_url})",
             inline=False,
         )
 
