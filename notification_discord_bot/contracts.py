@@ -51,6 +51,7 @@ class AzraelContract(ReNFTContract):
         transaction_type = TransactionType.LEND
         nft = partial(get_nft, lending["nftAddress"], lending["tokenId"], self.chain())
         _lending = Lending(
+            cursor=lending["cursor"],
             nft=nft,
             lending_id=int(lending["id"]),
             lender_address=lending["lenderAddress"],
@@ -75,6 +76,7 @@ class AzraelContract(ReNFTContract):
             self.chain(),
         )
         _renting = Renting(
+            cursor=renting["cursor"],
             nft=nft,
             lending_id=renting["lending"]["id"],
             renting_id=renting["id"],
@@ -114,6 +116,7 @@ class SylvesterContract(ReNFTContract):
         transaction_type = TransactionType.LEND
         nft = partial(get_nft, lending["nftAddress"], lending["tokenID"], self.chain())
         _lending = Lending(
+            cursor=lending["cursor"],
             nft=nft,
             lending_id=int(lending["id"]),
             lender_address=lending["lenderAddress"],
@@ -138,6 +141,7 @@ class SylvesterContract(ReNFTContract):
             self.chain(),
         )
         _renting = Renting(
+            cursor=renting["cursor"],
             nft=nft,
             lending_id=renting["lending"]["id"],
             renting_id=renting["id"],
@@ -179,6 +183,7 @@ class WhoopiContract(ReNFTContract):
         payment_token = PaymentToken(int(lending["paymentToken"]))
         payment_token_details = resolve_payment_token_details(self, payment_token)
         _lending = Lending(
+            cursor=lending["cursor"],
             nft=nft,
             lending_id=int(lending["id"]),
             lender_address=lending["lenderAddress"],
@@ -209,6 +214,7 @@ class WhoopiContract(ReNFTContract):
         payment_token = PaymentToken(int(renting["lending"]["paymentToken"]))
         payment_token_details = resolve_payment_token_details(self, payment_token)
         _renting = Renting(
+            cursor=renting["cursor"],
             nft=nft,
             lending_id=renting["lending"]["id"],
             renting_id=renting["id"],

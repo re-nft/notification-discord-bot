@@ -54,6 +54,7 @@ class NonFungibleToken:
 
 @dataclass
 class Lending:
+    cursor: int
     nft: Callable[[], NonFungibleToken]
     lending_id: int
     lender_address: str
@@ -67,13 +68,10 @@ class Lending:
     revshare_beneficiaries: Optional[list[str]]
     revshare_portions: Optional[list[int]]
 
-    @property
-    def id(self):
-        return str(self.lending_id).rjust(50, "0")
-
 
 @dataclass
 class Renting:
+    cursor: int
     nft: Callable[[], NonFungibleToken]
     lending_id: int
     renting_id: int
@@ -87,10 +85,6 @@ class Renting:
     upfront_rent_fee: Optional[float]
     revshare_beneficiaries: Optional[list[str]]
     revshare_portions: Optional[list[int]]
-
-    @property
-    def id(self):
-        return str(self.renting_id).rjust(50, "0")
 
 
 @dataclass

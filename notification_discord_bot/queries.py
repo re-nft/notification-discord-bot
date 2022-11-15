@@ -1,7 +1,8 @@
 AZRAEL_GET_LENDINGS_QUERY = """
 {
-    lendings(orderBy: lentAt, orderDirection: desc, first: $first, skip: $skip) {
+    lendings(orderBy: cursor, orderDirection: desc, first: $first, skip: $skip) {
         id
+        cursor,
         lenderAddress
         maxRentDuration
         dailyRentPrice
@@ -17,8 +18,9 @@ AZRAEL_GET_LENDINGS_QUERY = """
 
 AZRAEL_GET_RENTINGS_QUERY = """
 {
-    rentings(orderBy: rentedAt, orderDirection: desc, first: $first, skip: $skip) {
+    rentings(orderBy: cursor, orderDirection: desc, first: $first, skip: $skip) {
         id,
+        cursor,
         renterAddress,
         rentDuration,
         rentedAt,
@@ -39,8 +41,9 @@ AZRAEL_GET_RENTINGS_QUERY = """
 
 SYLVESTER_GET_LENDINGS_QUERY = """
 {
-    lendings(orderBy: lentAt, orderDirection: desc, first: $first, skip: $skip) {
+    lendings(orderBy: cursor, orderDirection: desc, first: $first, skip: $skip) {
         id,
+        cursor,
         lenderAddress,
         maxRentDuration,
         dailyRentPrice,
@@ -56,8 +59,9 @@ SYLVESTER_GET_LENDINGS_QUERY = """
 
 SYLVESTER_GET_RENTINGS_QUERY = """
 {
-    rentings(orderBy: rentedAt, orderDirection: desc, where: {expired: false}, first: $first, skip: $skip) {
+    rentings(orderBy: cursor, orderDirection: desc, where: {expired: false}, first: $first, skip: $skip) {
         id,
+        cursor,
         renterAddress,
         rentDuration,
         rentedAt,
@@ -76,8 +80,9 @@ SYLVESTER_GET_RENTINGS_QUERY = """
 
 WHOOPI_GET_LENDINGS_QUERY = """
 {
-    lendings(orderBy: lentAt, orderDirection: desc, first: $first, skip: $skip) {
+    lendings(orderBy: cursor, orderDirection: desc, first: $first, skip: $skip) {
         id,
+        cursor,
         lenderAddress,
         maxRentDuration,
         paymentToken,
@@ -94,8 +99,9 @@ WHOOPI_GET_LENDINGS_QUERY = """
 
 WHOOPI_GET_RENTINGS_QUERY = """
 {
-    rentings(orderBy: rentedAt, orderDirection: desc, where: {expired: false}, first: $first, skip: $skip) {
+    rentings(orderBy: cursor, orderDirection: desc, where: {expired: false}, first: $first, skip: $skip) {
         id,
+        cursor,
         renterAddress,
         rentDuration,
         rentedAt,

@@ -119,14 +119,14 @@ class ReNFTLendingDatum(ReNFTDatum):
             transaction_type=TransactionType.LEND,
         )
 
-        return m is not None and self.lending.id <= attrgetter("renft_id")(m)
+        return m is not None and self.lending.cursor <= attrgetter("renft_id")(m)
 
     def observe(self):
         if not self.has_been_observed():
             ReNFTModel.update_or_create(
                 contract_name=self.contract.name,
                 transaction_type=TransactionType.LEND,
-                defaults={"renft_id": self.lending.id},
+                defaults={"renft_id": self.lending.cursor},
             )
 
 
@@ -231,12 +231,12 @@ class ReNFTRentingDatum(ReNFTDatum):
             contract_name=self.contract.name,
             transaction_type=TransactionType.RENT,
         )
-        return m is not None and self.renting.id <= attrgetter("renft_id")(m)
+        return m is not None and self.renting.cursor <= attrgetter("renft_id")(m)
 
     def observe(self):
         if not self.has_been_observed():
             ReNFTModel.update_or_create(
                 contract_name=self.contract.name,
                 transaction_type=TransactionType.RENT,
-                defaults={"renft_id": self.renting.id},
+                defaults={"renft_id": self.renting.cursor},
             )
