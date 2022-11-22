@@ -33,7 +33,7 @@ class ReNFTLendingDatum(ReNFTDatum):
         profile_url = get_profile_url(self.contract, self.lending.lender_address)
 
         msg = discord.Embed(
-            title=f"{nft.name} Lent.",
+            title=f"{nft.name} Lent",
             url=f"{get_lending_url(self.contract, self.lending.lending_id)}",
         )
         msg.set_thumbnail(url=nft.image_url)
