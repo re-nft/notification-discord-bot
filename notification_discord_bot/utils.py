@@ -36,8 +36,10 @@ def query_the_graph(
     res.raise_for_status()
     data = json.loads(res.content)
     if errors := data.get("errors"):
-        logger.error(f"Error in {query_url} with query:\n{the_graph_query}")
-        raise RuntimeError(str(errors))
+        logger.error(
+            f"Error in {query_url} with query:\n{the_graph_query}\n{json.dumps(errors)}"
+        )
+        return {}
     return data
 
 
